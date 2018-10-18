@@ -47,27 +47,54 @@ public class TipousuarioDao {
 
     }
 
-    public String remove(int id) throws Exception {
-        String strSQL ="DELETE FROM "+ ob +" WHERE id= ? ";
-        Boolean oResultSet = null;
+    public boolean remove(int id) throws Exception {
+        String strSQL = "DELETE FROM " + ob + " WHERE id= ? ";
+        Boolean oResultSet;
         PreparedStatement oPreparedStatement = null;
-        String respusta;
+        boolean respusta;
         try {
             oPreparedStatement = oConnection.prepareStatement(strSQL);
             oPreparedStatement.setInt(1, id);
             oResultSet = oPreparedStatement.execute();
-            respusta = "BORRADA OK "+oResultSet.booleanValue();
-
+            respusta = true;
         } catch (SQLException e) {
-            respusta = "Error en Dao delete de tipousuario";
-            throw new Exception(respusta, e);
+
+            throw new Exception("Error en Dao delete de tipousuario", e);
         } finally {
             if (oPreparedStatement != null) {
                 oPreparedStatement.close();
             }
         }
 
-        return respusta.toString();
+        return respusta;
+
+    }
+
+    public Integer getcount() throws Exception {
+        String strSQL = "SELECT COUNT(id) FROM " + ob ;
+        TipousuarioBean oTipousuarioBean;
+        ResultSet oResultSet = null;
+        PreparedStatement oPreparedStatement = null;
+        Integer respusta = null;
+        try {
+            oResultSet = oConnection.prepareStatement(strSQL).executeQuery();
+            if (oResultSet.next()) {
+                respusta=oResultSet.getInt(1);
+            } else {
+                oTipousuarioBean = null;
+            }
+        } catch (SQLException e) {
+            throw new Exception("Error en Dao get de tipousuario", e);
+        } finally {
+            if (oResultSet != null) {
+                oResultSet.close();
+            }
+            if (oPreparedStatement != null) {
+                oPreparedStatement.close();
+            }
+        }
+
+        return respusta;
 
     }
 
