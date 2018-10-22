@@ -71,7 +71,7 @@ public class TipousuarioDao {
     }
 
     public Integer getcount() throws Exception {
-        String strSQL = "SELECT COUNT(id) FROM " + ob ;
+        String strSQL = "SELECT COUNT(id) FROM " + ob;
         TipousuarioBean oTipousuarioBean;
         ResultSet oResultSet = null;
         PreparedStatement oPreparedStatement = null;
@@ -79,7 +79,7 @@ public class TipousuarioDao {
         try {
             oResultSet = oConnection.prepareStatement(strSQL).executeQuery();
             if (oResultSet.next()) {
-                respusta=oResultSet.getInt(1);
+                respusta = oResultSet.getInt(1);
             } else {
                 oTipousuarioBean = null;
             }
@@ -98,4 +98,48 @@ public class TipousuarioDao {
 
     }
 
+    public String create(String desc) throws Exception {
+
+        String strSQL = "INSERT INTO trolleyes." + ob + " (trolleyes.tipousuario.desc) VALUES ('" + desc + "')";
+
+        boolean oResultSet;
+        PreparedStatement oPreparedStatement = null;
+        String respuesta;
+        try {
+            oResultSet = oConnection.prepareStatement(strSQL).execute();
+            respuesta = "Creado";
+        } catch (SQLException e) {
+            throw new Exception("Error en Dao create de tipousuario", e);
+        } finally {
+
+            if (oPreparedStatement != null) {
+                oPreparedStatement.close();
+            }
+        }
+        return respuesta;
+    }
+
+    public TipousuarioBean update(String desc, String id) throws Exception {
+        String strSQL = "UPDATE trolleyes." + ob + " SET trolleyes.tipousuario.desc = '" + desc + "' WHERE trolleyes.tipousuario.id =?";
+        TipousuarioBean oTipousuarioBean;
+        boolean oResultSet;
+        PreparedStatement oPreparedStatement = null;
+        try {
+            oPreparedStatement = oConnection.prepareStatement(strSQL);
+            oPreparedStatement.setInt(1, Integer.parseInt(id));
+            oResultSet = oPreparedStatement.execute();
+            oTipousuarioBean = new TipousuarioBean();
+            oTipousuarioBean.setDesc(desc);
+            oTipousuarioBean.setId(Integer.parseInt(id));
+        } catch (SQLException e) {
+            throw new Exception("Error en Dao get de tipousuario", e);
+        } finally {
+            if (oPreparedStatement != null) {
+                oPreparedStatement.close();
+            }
+        }
+
+        return oTipousuarioBean;
+
+    }
 }
